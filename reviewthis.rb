@@ -40,7 +40,7 @@ end
 helpers do
   def mail(params)
     body = mustache :email, {}, params
-    Pony.mail(:to => params[:email], :from => 'info@reviewthis.heroku.com', :subject => "Code Review Request: from #{params[:commit_author]}", :body => body, :via => options.via, :via_settings => options.via_settings) 
+    Pony.mail(:to => params[:email], :from => ENV['EMAIL_FROM'], :subject => "Code Review Request: from #{params[:commit_author]}", :body => body, :via => options.via, :via_settings => options.via_settings) 
   end
 end
 
