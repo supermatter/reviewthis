@@ -13,7 +13,7 @@ configure do
    
   # regex's
   USER = /[^a-z0-9_]@([a-z0-9_]+)/i
-  HASH = /[^a-z0-9_]#([a-z0-9_]+)/i
+  HASH = /[^a-z0-9_]#([a-z0-9_]+)/i # not used yet, but perhaps soon?
   REVIEW = /[^a-z0-9_](#reviewthis)[^a-z0-9_]+/i
   EMAIL = /\b([A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4})\b/i
 end
@@ -34,15 +34,16 @@ configure :production do
 end
 
 configure :development, :test do
-  set :from, 'info@localhost'
+    set :from, 'reviewthis@localhost'
   set :via, :sendmail
   set :via_options, {}
 end
 
 helpers do
-  def mail(params)
-    body = mustache :email, {}, params
-    Pony.mail(:to => params[:email], :from => options.from, :subject => "Code Review Request: from #{params[:commit_author]}", :body => body, :via => options.via, :via_options => options.via_options) 
+  def mail(vars)
+    body = mustache :email, {}, vars
+    html_body = mustache :email_html, {}, vars    
+    Pony.mail(:to => vars[:email], :from => options.from, :subject => "[#{vars[:repo_name]}] code review request from #{vars[:commit_author]}", :body => body,:html_body => html_body, :via => options.via, :via_options => options.via_options) 
   end
 end
 
@@ -54,32 +55,41 @@ end
 # the meat
 post '/' do
   push = JSON.parse(params[:payload])
-  commit = push['commits'][0]
-  message = commit['message']
+  
+  # check every commit, not just the first
+  push['commits'].each do |commit|
 
-  if message.match(REVIEW)
+    message = commit['message']
+
+    if message.match(REVIEW)
     
-    # set some template vars
-    vars = {
-      :message => message,
-      :commit_author => commit['author']['name'],
-      :commit_url => commit['url'],
-      :repo_name => push['repository']['name']
-    }
+      # set some template vars
+      vars = {
+        :commit_id => commit['id'],
+        :commit_message => message,
+        :commit_timestamp => commit['timestamp'],
+        :commit_relative_time => Time.parse( commit['timestamp'] ).strftime("%m/%d/%Y at %I:%M%p"),
+        :commit_author => commit['author']['name'],
+        :commit_url => commit['url'],
+        :repo_name => push['repository']['name'],
+        :repo_url => push['repository']['url'],        
+      }
     
-    message.scan(USER) { |username|
-      user = Octopussy.user(username) #github user info!
-      vars[:username] = user.name
-      vars[:email] = user.email
-      mail(vars)
-    }
+      message.scan(USER) do |username|
+        user = Octopussy.user(username) #github user info!
+        vars[:username] = user.name
+        vars[:email] = user.email
+        mail(vars)
+      end
   
-    message.scan(EMAIL) { |email|
-      vars[:username] = email
-      vars[:email] = email
-      mail(vars)
-    }
+      message.scan(EMAIL) do |email|
+        vars[:username] = email
+        vars[:email] = email
+        mail(vars)
+      end
   
+    end
+    
   end
   
   return
