@@ -1,0 +1,6 @@
+sinatra -v 1.0
+json -v 1.2.0
+pony -v 1.0
+twitter-text -v 1.1.4
+octopi -v 0.2.8
+mustache
