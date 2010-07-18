@@ -22,7 +22,7 @@ configure :production do
   # only run om Heroku
   set :from, ENV['SENDGRID_USERNAME']
   set :via, :smtp
-  set :via_settings, {
+  set :via_options, {
     :address        => "smtp.sendgrid.net",
     :port           => "25",
     :authentication => :plain,
@@ -36,13 +36,13 @@ end
 configure :development, :test do
   set :from, 'info@localhost'
   set :via, :sendmail
-  set :via_settings, {}
+  set :via_options, {}
 end
 
 helpers do
   def mail(params)
     body = mustache :email, {}, params
-    Pony.mail(:to => params[:email], :from => options.from, :subject => "Code Review Request: from #{params[:commit_author]}", :body => body, :via => options.via, :via_settings => options.via_settings) 
+    Pony.mail(:to => params[:email], :from => options.from, :subject => "Code Review Request: from #{params[:commit_author]}", :body => body, :via => options.via, :via_options => options.via_options) 
   end
 end
 
