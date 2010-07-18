@@ -1,7 +1,5 @@
 Reviewthis readme (that's a pun, by the way)
 
-I am updating the docs so I can push a new commit with a review request. Stay tuned!
-
 Set your repo's Post-Receive hook to: http://reviewthis.heroku.com/
 
 If a commit message includes the hash #reviewthis, any github user
