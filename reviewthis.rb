@@ -2,12 +2,10 @@ require 'rubygems'
 require 'sinatra'
 require 'json'
 require 'mustache/sinatra'
-require 'octopi'
 require 'pony'
+require 'octopussy'
 
 configure do
-  include Octopi
-  
   set :mustache, {
      :views     => 'views/',
      :templates => 'templates/'
@@ -48,7 +46,7 @@ end
 
 # test!
 get '/' do
-  "Reviewthis @github!"
+  "#reviewthis @github!"
 end
 
 # the meat
@@ -68,7 +66,7 @@ post '/' do
     }
     
     message.scan(USER) { |username|
-      user = User.find(username) #github user info!
+      user = Octopussy.user(username) #github user info!
       vars[:username] = user.name
       vars[:email] = user.email
       mail(vars)

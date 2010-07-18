@@ -1,5 +1,5 @@
 sinatra -v 1.0
 json -v 1.2.0
 pony -v 1.0
-octopi -v 0.2.8
+octopussy -v 0.2.3
 mustache -v 0.11.2
