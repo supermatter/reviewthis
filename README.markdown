@@ -1,6 +1,6 @@
 reviewthis
 ===
-reviewthis is a simple Sinatra app that parses github commit messages and sends email notifications based on their contents. We use it to request code reviews.
+reviewthis is a simple Sinatra app that parses github commit messages and sends email notifications based on their contents. We use it to request code reviews from other team members.
 
 Usage
 ---
@@ -22,6 +22,6 @@ Now, just take the app name that heroku created for you, and set it as a [Post-R
 
 Requirements
 ---
-Besides Sinatra, reviewthis requires [mustache](http://github.com/defunkt/mustache), [pony](http://github.com/benprew/pony), and [octopussy](http://github.com/pengwynn/octopussy).
+Besides Sinatra, reviewthis requires [json](http://flori.github.com/json/),[mustache](http://github.com/defunkt/mustache), [pony](http://github.com/benprew/pony), and [octopussy](http://github.com/pengwynn/octopussy).
 
 *Note that the sendgrid add-on limits you to 200 messages per day.*
