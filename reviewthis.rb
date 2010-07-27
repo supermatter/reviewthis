@@ -18,8 +18,9 @@ configure do
   EMAIL = /\b([A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4})\b/i
 end
 
+# production vars
 configure :production do
-  # only run om Heroku
+  # only run on Heroku
   set :from, ENV['SENDGRID_USERNAME']
   set :via, :smtp
   set :via_options, {
@@ -33,6 +34,7 @@ configure :production do
   
 end
 
+# development vars
 configure :development, :test do
     set :from, 'reviewthis@localhost'
   set :via, :sendmail
@@ -40,6 +42,7 @@ configure :development, :test do
 end
 
 helpers do
+  # mail helper. Thnx Pony!
   def mail(vars)
     body = mustache :email, {}, vars
     html_body = mustache :email_html, {}, vars    
@@ -60,7 +63,8 @@ post '/' do
   push['commits'].each do |commit|
 
     message = commit['message']
-
+    
+    # we've got a #reviewthis hash
     if message.match(REVIEW)
     
       # set some template vars
@@ -74,14 +78,16 @@ post '/' do
         :repo_name => push['repository']['name'],
         :repo_url => push['repository']['url'],        
       }
-    
+      
+      # let's find all the github users
       message.scan(USER) do |username|
-        user = Octopussy.user(username) #github user info!
+        user = Octopussy.user(username) # get the github user info
         vars[:username] = user.name
         vars[:email] = user.email
         mail(vars)
       end
-  
+    
+      # now let's find any email addresses
       message.scan(EMAIL) do |email|
         vars[:username] = email
         vars[:email] = email
