@@ -20,7 +20,7 @@ If you want to roll your own, *reviewthis* is set up to be easily deployed to [h
 	git clone git@github.com:supermatter/reviewthis.git
 	cd reviewthis/
 	heroku create
-	heroku addons:add sendgrid:free
+	heroku addons:add sendgrid:starter
 	git push heroku master
 
 Now, just take the app name that heroku created for you, and set it as a [Post-Receive URL](http://help.github.com/post-receive-hooks/) for your repo. **You're all set!**
