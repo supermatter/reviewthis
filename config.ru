@@ -1,3 +1,3 @@
-require 'reviewthis'
+require './reviewthis'
 
 run Sinatra::Application
