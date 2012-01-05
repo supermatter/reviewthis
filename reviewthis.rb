@@ -44,8 +44,8 @@ end
 helpers do
   # mail helper. Thnx Pony!
   def mail(vars)
-    body = mustache :email, {}, vars
-    html_body = mustache :email_html, {}, vars    
+    body = mustache :email, {:layout=>false}, vars
+    html_body = mustache :email_html, {:layout=>false}, vars    
     Pony.mail(:to => vars[:email], :from => options.from, :subject => "[#{vars[:repo_name]}] code review request from #{vars[:commit_author]}", :body => body,:html_body => html_body, :via => options.via, :via_options => options.via_options) 
   end
 end
@@ -53,6 +53,19 @@ end
 # test!
 get '/' do
   "#reviewthis @github!"
+  vars = {
+    :commit_id => "1234",
+    :commit_message => "message",
+    :commit_timestamp => 1234,
+    :commit_relative_time => "2012-01-01",
+    :commit_author => "test",
+    :commit_url => "test",
+    :repo_name => "test",
+    :repo_url => "test",
+    :username => "test",
+    :email => params[:testemail],
+  }
+  mail(vars)
 end
 
 # the meat
